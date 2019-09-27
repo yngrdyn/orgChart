@@ -33,7 +33,7 @@ export class Node implements d3.SimulationNodeDatum {
 
   get color() {
     if (this.location === 'Barcelona') {
-      return CONFIG.SPECTRUM[5];
+      return CONFIG.SPECTRUM[4];
     }
     if (this.location === 'Linz') {
       return CONFIG.SPECTRUM[0];

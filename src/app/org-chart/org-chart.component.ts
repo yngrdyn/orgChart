@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
 import { Node, Link } from './models';
 
 @Component({
@@ -9,6 +9,7 @@ import { Node, Link } from './models';
 export class OrgChartComponent implements OnChanges {
 
   @Input() data: any[];
+  @Output() nodeClicked = new EventEmitter<string>();
 
   nodes: Node[] = [];
   links: Link[] = [];
@@ -26,6 +27,10 @@ export class OrgChartComponent implements OnChanges {
         }
       }
     }
+  }
+
+  onNodeClick(event) {
+    this.nodeClicked.emit(event);
   }
 
   private getNodeIndex(id) {

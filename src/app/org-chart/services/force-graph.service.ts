@@ -57,4 +57,5 @@ export class ForceGraphService {
     const sg = new ForceGraph(nodes, links, options);
     return sg;
   }
+  
 }

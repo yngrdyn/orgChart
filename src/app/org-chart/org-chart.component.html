@@ -1,4 +1,5 @@
 <force-graph *ngIf="data"
     [nodes]="nodes"
-    [links]="links">
+    [links]="links"
+    (nodeClicked)="onNodeClick($event)">
 </force-graph>

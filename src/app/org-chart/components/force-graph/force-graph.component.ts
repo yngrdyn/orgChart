@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ForceGraph } from '../../models';
 import { ForceGraphService } from '../../services/force-graph.service';
 
@@ -9,7 +9,7 @@ import { ForceGraphService } from '../../services/force-graph.service';
     <svg #svg [attr.width]="options.width" [attr.height]="options.height">
       <g [zoomableOf]="svg">
         <g [link]="link" *ngFor="let link of links"></g>
-        <g [node]="node" *ngFor="let node of nodes"
+        <g [node]="node" (nodeClicked)="onNodeClick($event)" *ngFor="let node of nodes"
             [draggableNode]="node" [draggableInGraph]="graph"></g>
       </g>
     </svg>
@@ -17,8 +17,12 @@ import { ForceGraphService } from '../../services/force-graph.service';
   styleUrls: ['./force-graph.component.css']
 })
 export class ForceGraphComponent implements OnInit, OnChanges {
+
   @Input() nodes;
   @Input() links;
+
+  @Output() nodeClicked = new EventEmitter<string>();
+
   graph: ForceGraph;
 
   private _options: { width, height } = { width: 800, height: 600 };
@@ -27,7 +31,6 @@ export class ForceGraphComponent implements OnInit, OnChanges {
   onResize(event) {
     this.graph.initSimulation(this.options);
   }
-
 
   constructor(private d3Service: ForceGraphService, private ref: ChangeDetectorRef) {}
 
@@ -51,5 +54,9 @@ export class ForceGraphComponent implements OnInit, OnChanges {
       width: window.innerWidth,
       height: window.innerHeight
     };
+  }
+
+  onNodeClick(event) {
+    this.nodeClicked.emit(event);
   }
 }

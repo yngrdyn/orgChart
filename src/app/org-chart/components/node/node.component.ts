@@ -1,10 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Node } from '../../models';
 
 @Component({
   selector: '[node]',
   template: `
-    <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
+    <svg:g (click)="onClick()" [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
       <clipPath id="circle-mask">
         <svg:circle cx="0" cy="0" [attr.r]="node.r" fill="red" />
       </clipPath>
@@ -29,4 +29,9 @@ import { Node } from '../../models';
 })
 export class NodeComponent {
   @Input() node: Node;
+  @Output() nodeClicked = new EventEmitter<string>();
+
+  onClick() {
+    this.nodeClicked.emit(this.node.id);
+  }
 }
