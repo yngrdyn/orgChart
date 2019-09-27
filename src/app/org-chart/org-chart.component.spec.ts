@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ForceGraphComponent } from './force-graph.component';
+import { OrgChartComponent } from './org-chart.component';
 
-describe('ForceGraphComponent', () => {
-  let component: ForceGraphComponent;
-  let fixture: ComponentFixture<ForceGraphComponent>;
+describe('OrgChartComponent', () => {
+  let component: OrgChartComponent;
+  let fixture: ComponentFixture<OrgChartComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ForceGraphComponent ]
+      declarations: [ OrgChartComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ForceGraphComponent);
+    fixture = TestBed.createComponent(OrgChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

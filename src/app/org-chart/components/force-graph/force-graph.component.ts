@@ -1,78 +1,55 @@
-import { Component, Input, OnChanges, SimpleChanges, ElementRef, ViewChild } from '@angular/core';
-import { OrgChartData } from '../../models/org-chart-data';
-import * as d3 from 'd3';
+import { Component, Input, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { ForceGraph } from '../../models';
+import { ForceGraphService } from '../../services/force-graph.service';
 
 @Component({
-  selector: 'app-force-graph',
-  templateUrl: './force-graph.component.html',
-  styleUrls: ['./force-graph.component.scss']
+  selector: 'force-graph',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <svg #svg [attr.width]="options.width" [attr.height]="options.height">
+      <g [zoomableOf]="svg">
+        <g [link]="link" *ngFor="let link of links"></g>
+        <g [node]="node" *ngFor="let node of nodes"
+            [draggableNode]="node" [draggableInGraph]="graph"></g>
+      </g>
+    </svg>
+  `,
+  styleUrls: ['./force-graph.component.css']
 })
-export class ForceGraphComponent implements OnChanges {
+export class ForceGraphComponent implements OnInit, OnChanges {
+  @Input() nodes;
+  @Input() links;
+  graph: ForceGraph;
 
-  @Input() data: OrgChartData[];
+  private _options: { width, height } = { width: 800, height: 600 };
 
-  @ViewChild('chart', {static: false}) private chartContainer: ElementRef;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.graph.initSimulation(this.options);
+  }
 
-  margin = {top: 20, right: 20, bottom: 30, left: 40};
 
-  constructor() { }
+  constructor(private d3Service: ForceGraphService, private ref: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.data) {
-      this.createChart();
+    if (this.nodes) {
+      this.graph = this.d3Service.getForceGraph(this.nodes, this.links, this.options);
+      this.graph.initSimulation(this.options);
     }
   }
 
-  private createChart(): void {
-    d3.select('svg').remove();
+  ngOnInit() {
+    this.graph = this.d3Service.getForceGraph(this.nodes, this.links, this.options);
 
-    const element = this.chartContainer.nativeElement;
-    const data = this.data;
-
-    const svg = d3.select(element).append('svg')
-        .attr('width', element.offsetWidth)
-        .attr('height', element.offsetHeight);
-
-    const contentWidth = element.offsetWidth - this.margin.left - this.margin.right;
-    const contentHeight = element.offsetHeight - this.margin.top - this.margin.bottom;
-
-    const x = d3
-      .scaleBand()
-      .rangeRound([0, contentWidth])
-      .padding(0.1)
-      .domain(data.map(d => d.letter));
-
-    const y = d3
-      .scaleLinear()
-      .rangeRound([contentHeight, 0])
-      .domain([0, d3.max(data, d => d.frequency)]);
-
-    const g = svg.append('g')
-      .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
-
-    g.append('g')
-      .attr('class', 'axis axis--x')
-      .attr('transform', 'translate(0,' + contentHeight + ')')
-      .call(d3.axisBottom(x));
-
-    g.append('g')
-      .attr('class', 'axis axis--y')
-      .call(d3.axisLeft(y).ticks(10, '%'))
-      .append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 6)
-        .attr('dy', '0.71em')
-        .attr('text-anchor', 'end')
-        .text('Frequency');
-
-    g.selectAll('.bar')
-      .data(data)
-      .enter().append('rect')
-        .attr('class', 'bar')
-        .attr('x', d => x(d.letter))
-        .attr('y', d => y(d.frequency))
-        .attr('width', x.bandwidth())
-        .attr('height', d => contentHeight - y(d.frequency));
+    this.graph.ticker.subscribe((d) => {
+      this.ref.markForCheck();
+    });
   }
 
+  get options() {
+    return this._options = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    };
+  }
 }
