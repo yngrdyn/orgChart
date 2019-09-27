@@ -1,6 +1,5 @@
 import { Component, Input, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
 import { Node, Link } from './models';
-import { link } from 'fs';
 
 @Component({
   selector: 'app-org-chart',
@@ -30,30 +29,35 @@ export class OrgChartComponent implements OnChanges {
     }
   }
 
-  onNodeClick(event) {
+  onNodeClick(supervisorId) {
+    this.toggleNodes(supervisorId);
+    this.toggleLinks(supervisorId);
+  }
+
+  private getNodeIndex(id) {
+    return this.nodes.findIndex(node => node.id === id);
+  }
+
+  private toggleNodes(supervisorId) {
     this.nodes = this.nodes.map(
       (node) => {
-        if (node.supervisor === event) {
+        if (node.supervisor === supervisorId) {
           node.visible = !node.visible;
         }
         return node;
       }
     );
-    console.log(this.nodes);
+  }
 
+  private toggleLinks(supervisorId) {
     this.links = this.links.map(
       (link) => {
-        if (link.target.supervisor === event || link.source.supervisor === event) {
+        if (link.target.supervisor === supervisorId || link.source.supervisor === supervisorId) {
           link.visible = !link.visible;
         }
         return link;
       }
     );
-    console.log(this.links);
-  }
-
-  private getNodeIndex(id) {
-    return this.nodes.findIndex(node => node.id === id);
   }
 
 }
