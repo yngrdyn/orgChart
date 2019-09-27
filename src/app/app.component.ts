@@ -17,4 +17,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {}
 
+  onNodeClick(event) {
+    console.log(event);
+  }
+
 }

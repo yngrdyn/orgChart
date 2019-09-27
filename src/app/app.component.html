@@ -1,3 +1,4 @@
 <app-org-chart
-    [data]="data$ | async">
+    [data]="data$ | async"
+    (nodeClicked)="onNodeClick($event)">
 </app-org-chart>
