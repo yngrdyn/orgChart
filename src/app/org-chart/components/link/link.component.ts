@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { Link } from '../../models';
 
 @Component({
+  // tslint:disable-next-line: component-selector
   selector: '[link]',
   template: `
-    <svg:line
+    <svg:line [attr.visibility]="link.visible ? 'visible' : 'hidden'"
         class="link"
         [attr.x1]="link.source.x"
         [attr.y1]="link.source.y"

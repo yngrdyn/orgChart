@@ -1,5 +1,6 @@
 import { Component, Input, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
 import { Node, Link } from './models';
+import { link } from 'fs';
 
 @Component({
   selector: 'app-org-chart',
@@ -19,7 +20,7 @@ export class OrgChartComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (this.data) {
       for (const person of this.data) {
-        this.nodes.push(new Node(person.id, person.location));
+        this.nodes.push(new Node(person.id, person.location, person.supervisor));
         if (person.supervisor) {
           this.nodes[this.getNodeIndex(person.id)].linkCount++;
           this.nodes[this.getNodeIndex(person.supervisor)].linkCount++;
@@ -30,7 +31,25 @@ export class OrgChartComponent implements OnChanges {
   }
 
   onNodeClick(event) {
-    this.nodeClicked.emit(event);
+    this.nodes = this.nodes.map(
+      (node) => {
+        if (node.supervisor === event) {
+          node.visible = !node.visible;
+        }
+        return node;
+      }
+    );
+    console.log(this.nodes);
+
+    this.links = this.links.map(
+      (link) => {
+        if (link.target.supervisor === event || link.source.supervisor === event) {
+          link.visible = !link.visible;
+        }
+        return link;
+      }
+    );
+    console.log(this.links);
   }
 
   private getNodeIndex(id) {

@@ -1,5 +1,7 @@
-import { Component, ɵɵNgOnChangesFeature, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
+import { filter, tap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -16,9 +18,5 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {}
-
-  onNodeClick(event) {
-    console.log(event);
-  }
 
 }

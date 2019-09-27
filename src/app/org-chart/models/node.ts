@@ -10,13 +10,16 @@ export class Node implements d3.SimulationNodeDatum {
   fx?: number | null;
   fy?: number | null;
   location: string;
+  supervisor: string;
+  visible: boolean = true;
 
   id: string;
   linkCount: number = 0;
 
-  constructor(id, location) {
+  constructor(id, location, supervisor) {
     this.id = id;
     this.location = location;
+    this.supervisor = supervisor;
   }
 
   normal = () => {

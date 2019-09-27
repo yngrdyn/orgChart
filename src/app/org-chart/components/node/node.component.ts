@@ -4,7 +4,7 @@ import { Node } from '../../models';
 @Component({
   selector: '[node]',
   template: `
-    <svg:g (click)="onClick()" [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
+    <svg:g (click)="onClick()" [attr.visibility]="node.visible ? 'visible' : 'hidden'" [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
       <clipPath id="circle-mask">
         <svg:circle cx="0" cy="0" [attr.r]="node.r" fill="red" />
       </clipPath>
