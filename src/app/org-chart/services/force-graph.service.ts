@@ -29,7 +29,7 @@ export class ForceGraphService {
       d3.event.sourceEvent.stopPropagation();
 
       if (!d3.event.active) {
-        graph.simulation.alphaTarget(0.3).restart();
+        graph.simulation.alphaTarget(0.05).restart();
       }
 
       d3.event.on('drag', dragged).on('end', ended);
@@ -57,5 +57,4 @@ export class ForceGraphService {
     const sg = new ForceGraph(nodes, links, options);
     return sg;
   }
-  
 }

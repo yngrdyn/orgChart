@@ -43,6 +43,8 @@ export class OrgChartComponent implements OnChanges {
       (node) => {
         if (node.supervisor === supervisorId) {
           node.visible = !node.visible;
+          this.toggleNodes(node.id);
+          this.toggleLinks(node.id);
         }
         return node;
       }
@@ -52,7 +54,7 @@ export class OrgChartComponent implements OnChanges {
   private toggleLinks(supervisorId) {
     this.links = this.links.map(
       (link) => {
-        if (link.target.supervisor === supervisorId || link.source.supervisor === supervisorId) {
+        if (link.target.supervisor === supervisorId) {
           link.visible = !link.visible;
         }
         return link;

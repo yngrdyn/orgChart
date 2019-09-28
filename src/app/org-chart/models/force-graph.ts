@@ -4,10 +4,11 @@ import { Node } from './node';
 import * as d3 from 'd3';
 
 const FORCES = {
-  LINKS: 1 / 100,
+  LINKS: 1/2,
   COLLISION: 1,
-  CHARGE: -1
-}
+  CHARGE: -50,
+  DISTANCE: 20,
+};
 
 export class ForceGraph {
   public ticker: EventEmitter<d3.Simulation<Node, Link>> = new EventEmitter();
@@ -70,16 +71,20 @@ export class ForceGraph {
       this.simulation = d3.forceSimulation()
         .force('charge',
           d3.forceManyBody()
-            .strength(d => FORCES.CHARGE * d['r'])
+            .strength(FORCES.CHARGE)
         )
         .force('collide',
           d3.forceCollide()
             .strength(FORCES.COLLISION)
-            .radius(d => d['r'] + 5).iterations(2)
+            .radius(d => d['r'] + FORCES.DISTANCE)
         );
 
       // Connecting the d3 ticker to an angular event emitter
+      const that = this;
       this.simulation.on('tick', function () {
+        const node = that.nodes[that.nodes.findIndex(a => a.id === 'yngrid.coello')];
+        node.x = options.width / 2;
+        node.y = options.width / 4;
         ticker.emit(this);
       });
 

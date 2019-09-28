@@ -25,7 +25,7 @@ export class ForceGraphComponent implements OnInit, OnChanges {
 
   graph: ForceGraph;
 
-  private _options: { width, height } = { width: 800, height: 600 };
+  private _options: { width, height };
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -35,9 +35,10 @@ export class ForceGraphComponent implements OnInit, OnChanges {
   constructor(private d3Service: ForceGraphService, private ref: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.nodes) {
-      this.graph = this.d3Service.getForceGraph(this.nodes, this.links, this.options);
-      this.graph.initSimulation(this.options);
+    if (this.nodes && this.graph) {
+      this.graph.nodes = this.nodes;
+      this.graph.links = this.links;
+      //this.graph = this.d3Service.getForceGraph(this.nodes, this.links, this.options);
     }
   }
 
@@ -51,8 +52,8 @@ export class ForceGraphComponent implements OnInit, OnChanges {
 
   get options() {
     return this._options = {
-      width: window.innerWidth,
-      height: window.innerHeight
+      width: window.innerWidth - 10,
+      height: window.innerHeight - 20
     };
   }
 

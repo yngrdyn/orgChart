@@ -20,6 +20,10 @@ export class Node implements d3.SimulationNodeDatum {
     this.id = id;
     this.location = location;
     this.supervisor = supervisor;
+    if (this.id === 'yngrid.coello') {
+      this.x = window.innerWidth/2;
+      this.y = window.innerHeight/2;
+    }
   }
 
   normal = () => {
