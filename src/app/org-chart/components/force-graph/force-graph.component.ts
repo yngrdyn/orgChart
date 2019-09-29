@@ -38,7 +38,6 @@ export class ForceGraphComponent implements OnInit, OnChanges {
     if (this.nodes && this.graph) {
       this.graph.nodes = this.nodes;
       this.graph.links = this.links;
-      //this.graph = this.d3Service.getForceGraph(this.nodes, this.links, this.options);
     }
   }
 

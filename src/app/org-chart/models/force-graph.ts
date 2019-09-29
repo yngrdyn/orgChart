@@ -81,10 +81,7 @@ export class ForceGraph {
 
       // Connecting the d3 ticker to an angular event emitter
       const that = this;
-      this.simulation.on('tick', function () {
-        const node = that.nodes[that.nodes.findIndex(a => a.id === 'yngrid.coello')];
-        node.x = options.width / 2;
-        node.y = options.width / 4;
+      this.simulation.on('tick', function() {
         ticker.emit(this);
       });
 

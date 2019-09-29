@@ -43,8 +43,8 @@ export class OrgChartComponent implements OnChanges {
       (node) => {
         if (node.supervisor === supervisorId) {
           node.visible = !node.visible;
-          this.toggleNodes(node.id);
-          this.toggleLinks(node.id);
+          this.toggleChildNodes(node.id, node.visible);
+          this.toggleChildLinks(node.id, node.visible);
         }
         return node;
       }
@@ -56,6 +56,30 @@ export class OrgChartComponent implements OnChanges {
       (link) => {
         if (link.target.supervisor === supervisorId) {
           link.visible = !link.visible;
+        }
+        return link;
+      }
+    );
+  }
+
+  private toggleChildNodes(supervisorId, visible) {
+    this.nodes = this.nodes.map(
+      (node) => {
+        if (node.supervisor === supervisorId) {
+          node.visible = visible;
+          this.toggleChildNodes(node.id, visible);
+          this.toggleChildLinks(node.id, visible);
+        }
+        return node;
+      }
+    );
+  }
+
+  private toggleChildLinks(supervisorId, visible) {
+    this.links = this.links.map(
+      (link) => {
+        if (link.target.supervisor === supervisorId) {
+          link.visible = visible;
         }
         return link;
       }
