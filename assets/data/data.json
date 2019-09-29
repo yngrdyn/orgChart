@@ -1,25 +1,79 @@
 [
 	{
-		"id": "147173814",
-		"mame": "Oriol Barcelona",
-		"location": "Linz"
+		"id": "john.van.siclen",
+		"name": "John Van Siclen",
+		"location": "Waltham"
 	},
 	{
-		"id": "159318345",
+		"id": "bernd.greifeneder",
+		"name": "Greifeneder, Bernd",
+		"location": "Linz",
+		"supervisor": "john.van.siclen"
+	},
+	{
+		"id": "florian.ortner",
+		"name": "Florian Ortner",
+		"location": "Linz",
+		"supervisor": "bernd.greifeneder"
+	},
+	{
+		"id": "simon.scheurer",
+		"name": "Simon Scheurer",
+		"location": "Zurich",
+		"supervisor": "florian.ortner"
+	},
+	{
+		"id": "christian.gustavsson",
+		"name": "Christian Gustavsson",
+		"location": "Barcelona",
+		"supervisor": "simon.scheurer"
+	},
+	{
+		"id": "belen.garzon",
+		"name": "Belen Garzon",
+		"location": "Barcelona",
+		"supervisor": "simon.scheurer"
+	},
+	{
+		"id": "dania.grave",
+		"name": "Dania Grave De Peralta",
+		"location": "Barcelona",
+		"supervisor": "simon.scheurer"
+	},
+	{
+		"id": "alexander.scheran",
+		"name": "Alexander Scheran",
+		"location": "Linz",
+		"supervisor": "bernd.greifeneder"
+	},
+	{
+		"id": "peter.kunszt",
+		"name": "Peter Kunszt",
+		"location": "Zurich",
+		"supervisor": "alexander.scheran"
+	},
+	{
+		"id": "oriol.barcelona",
+		"mame": "Oriol Barcelona",
+		"location": "Barcelona",
+		"supervisor": "peter.kunszt"
+	},
+	{
+		"id": "ramon.arenal",
 		"mame": "Ramon Arenal",
 		"location": "Barcelona",
-		"supervisor": "147173814"
+		"supervisor": "oriol.barcelona"
 	},
 	{
-		"id": "188282723",
+		"id": "yngrid.coello",
 		"mame": "Yngrid Coello",
 		"location": "Barcelona",
-		"supervisor": "147173814"
+		"supervisor": "oriol.barcelona"
 	},
 	{
-		"id": "166083971",
+		"id": "luca.liguori",
 		"mame": "Luca Liguori",
 		"location": "Barcelona",
-		"supervisor": "147173814"
+		"supervisor": "oriol.barcelona"
 	}
 ]
