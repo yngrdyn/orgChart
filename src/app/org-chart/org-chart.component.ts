@@ -8,7 +8,7 @@ import { Node, Link } from './models';
 })
 export class OrgChartComponent implements OnChanges {
 
-  @Input() data: any[];
+  @Input() data: any;
   @Output() nodeClicked = new EventEmitter<string>();
 
   nodes: Node[] = [];
@@ -17,15 +17,8 @@ export class OrgChartComponent implements OnChanges {
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.data) {
-      for (const person of this.data) {
-        this.nodes.push(new Node(person.id, person.location, person.supervisor));
-        if (person.supervisor) {
-          this.nodes[this.getNodeIndex(person.id)].linkCount++;
-          this.nodes[this.getNodeIndex(person.supervisor)].linkCount++;
-          this.links.push(new Link(person.supervisor, person.id));
-        }
-      }
+    if (this.data && this.data.root) {
+      this.createNode(this.data.root, undefined);
     }
   }
 
@@ -34,8 +27,18 @@ export class OrgChartComponent implements OnChanges {
     this.toggleLinks(supervisorId);
   }
 
-  private getNodeIndex(id) {
-    return this.nodes.findIndex(node => node.id === id);
+  private createChildrenNodes(parentId, children) {
+    for (const child of children) {
+      this.createNode(child, parentId);
+      this.links.push(new Link(parentId, child.person.accountName));
+    }
+  }
+
+  private createNode(node, supervisorId) {
+    const newNode = new Node(node.person.accountName, 'Linz', supervisorId);
+    newNode.linkCount = supervisorId ? node.children.length + 1 : node.children.length;
+    this.nodes.push(newNode);
+    this.createChildrenNodes(node.person.accountName, node.children);
   }
 
   private toggleNodes(supervisorId) {
