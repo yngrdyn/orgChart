@@ -68,14 +68,7 @@ export class OrgChartComponent implements OnChanges {
       this.root.y0 = 0;
 
       this.update(this.root);
-
-      let x = -this.root.y0;
-      let y = -this.root.x0;
-      x = x /* * scale */ + 100;
-      y = y /* * scale */ + window.screen.height / 2;
-      this.svg.transition()
-          .duration(this.duration)
-          .attr('transform', 'translate(' + x + ',' + y + ')');
+      this.centerNode(this.root);
 
     }
   }
@@ -124,6 +117,7 @@ export class OrgChartComponent implements OnChanges {
         .data(nodes, function(n) {return n.id || (n.id = ++this.i); });
 
     const click = (d) => {
+      console.log(d);
       if (d.children) {
         d._children = d.children;
         d.children = null;
