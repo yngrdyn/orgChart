@@ -34,14 +34,16 @@ export class OrgChartComponent implements OnChanges {
   maxLabelLength = 0;
   totalNodes = 0;
 
+  selectedNode: any;
+
   constructor() { }
 
   ngOnChanges() {
     if (this.data) {
       console.log(this.data);
     // Set the dimensions and margins of the diagram
-          const width = window.screen.width,
-                height = window.screen.height;
+          const width = window.innerWidth,
+                height = window.innerHeight;
 
       // append the svg object to the body of the page
       // appends a 'group' element to 'svg'
@@ -67,10 +69,49 @@ export class OrgChartComponent implements OnChanges {
       this.root.x0 = height / 2;
       this.root.y0 = 0;
 
+      this.collapse(this.root);
+      this.find (this.root, 'yngrid.coello');
       this.update(this.root);
-      this.centerNode(this.root);
+      this.centerNode(this.selectedNode);
+      this.click(this.selectedNode);
 
     }
+  }
+
+  private collapse(d) {
+    if (d.children) {
+      d._children = d.children;
+      d._children.forEach((d1) => {
+        d1.parent = d; this.collapse(d1);
+      });
+      d.children = null;
+  }}
+
+  private find(d, name) {
+    if (d.data.person.accountName === name) {
+      this.selectedNode = d;
+      while (d.parent) {
+          d = d.parent;
+          this.click(d);
+      }
+      return;
+    }
+    if (d.children) {
+      d.children.forEach((d) => {this.find(d, name); });
+    } else if(d._children){
+      d._children.forEach((d) => {this.find(d, name); });
+    }
+  }
+
+  private click(d) {
+    if (d.children) {
+    d._children = d.children;
+    d.children = null;
+    } else {
+    d.children = d._children;
+    d._children = null;
+    }
+    this.update(d);
   }
 
   private update(source) {
@@ -117,7 +158,6 @@ export class OrgChartComponent implements OnChanges {
         .data(nodes, function(n) {return n.id || (n.id = ++this.i); });
 
     const click = (d) => {
-      console.log(d);
       if (d.children) {
         d._children = d.children;
         d.children = null;
@@ -134,9 +174,7 @@ export class OrgChartComponent implements OnChanges {
     // Enter any new modes at the parent's previous position.
     const nodeEnter = node.enter().append('g')
         .attr('class', 'node')
-        .attr('transform', function(d) {
-          return 'translate(' + source.y0 + ',' + source.x0 + ')';
-        })
+        .attr('transform', (d) => 'translate(' + source.y0 + ',' + source.x0 + ')')
         .on('click', click);
 
     // Add Circle for the nodes
@@ -148,13 +186,9 @@ export class OrgChartComponent implements OnChanges {
     // Add labels for the nodes
     nodeEnter.append('text')
         .attr('dy', '.35em')
-        .attr('x', function(d) {
-            return d.children || d._children ? -13 : 13;
-        })
-        .attr('text-anchor', function(d) {
-            return d.children || d._children ? 'end' : 'start';
-        })
-        .text(function(d) { return d.data.person.fullName; });
+        .attr('x', (d) => d.children || d._children ? -13 : 13)
+        .attr('text-anchor', (d) => d.children || d._children ? 'end' : 'start')
+        .text((d) => d.data.person.fullName);
 
     // UPDATE
     const nodeUpdate = nodeEnter.merge(node);
@@ -162,16 +196,12 @@ export class OrgChartComponent implements OnChanges {
     // Transition to the proper position for the node
     nodeUpdate/* .transition()
       .duration(this.duration) */
-      .attr('transform', function(d) {
-          return 'translate(' + d.y + ',' + d.x + ')';
-      });
+      .attr('transform', (d) => 'translate(' + d.y + ',' + d.x + ')');
 
     // Update the node attributes and style
     nodeUpdate.select('circle.node')
       .attr('r', 10)
-      .style('fill', function(d) {
-          return d._children ? 'lightsteelblue' : '#fff';
-      })
+      .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff')
       .attr('cursor', 'pointer');
 
 
@@ -195,13 +225,13 @@ export class OrgChartComponent implements OnChanges {
 
     // Update the links...
     const link = this.svg.selectAll('path.link')
-        .data(links, function(d) { return d.id; });
+        .data(links, (d) => d.id);
 
 
     // Enter any new links at the parent's previous position.
     const linkEnter = link.enter().insert('path', 'g')
         .attr('class', 'link')
-        .attr('d', function(d) {
+        .attr('d', (d) => {
           const o = {x: source.x0, y: source.y0};
           return diagonal(o, o);
         });
@@ -212,19 +242,19 @@ export class OrgChartComponent implements OnChanges {
     // Transition back to the parent element position
     linkUpdate/* .transition()
         .duration(this.duration) */
-        .attr('d', function(l) { return diagonal(l, l.parent); });
+        .attr('d', (l) => diagonal(l, l.parent));
 
     // Remove any exiting links
-    const linkExit = link.exit()/* .transition()
+    link.exit()/* .transition()
         .duration(this.duration) */
-        .attr('d', function(d) {
+        .attr('d', (d) => {
           const o = {x: source.x, y: source.y};
           return diagonal(o, o);
         })
         .remove();
 
     // Store the old positions for transition.
-    nodes.forEach(function(n) {
+    nodes.forEach((n) => {
       n.x0 = n.x;
       n.y0 = n.y;
     });
@@ -251,11 +281,16 @@ export class OrgChartComponent implements OnChanges {
     // scale = zoomListener.scale();
     let x = -source.y0;
     let y = -source.x0;
-    x = x /* * scale */ + window.screen.width / 2;
-    y = y /* * scale */ + window.screen.height / 2;
-    this.svg.transition()
+    x = x /* * scale */ + window.innerWidth / 2;
+    y = y /* * scale */ + window.innerHeight / 2;
+    if ( x !== undefined && y !== undefined) {
+      this.svg.transition()
         .duration(this.duration)
         .attr('transform', 'translate(' + x + ',' + y + ')');
+    }
+    /* this.svg.transition()
+        .duration(this.duration)
+        .attr('transform', 'translate(' + x + ',' + y + ')'); */
         // .attr('transform', 'translate(' + x + ',' + y + ')scale(' + scale + ')');
     // zoomListener.scale(scale);
     // zoomListener.translate([x, y]);
