@@ -74,6 +74,7 @@ export class OrgChartComponent implements OnChanges {
       this.update(this.root);
       this.centerNode(this.selectedNode);
       this.click(this.selectedNode);
+      this.updateNode(this.selectedNode);
 
     }
   }
@@ -86,6 +87,15 @@ export class OrgChartComponent implements OnChanges {
       });
       d.children = null;
   }}
+
+  private updateNode(node) {
+    const t = d3.select(`#${node.data.person.accountName.replace('.', '_')}`)
+      .select('text')
+      .style('font-weight', 'bold');
+    d3.select(`#${node.data.person.accountName.replace('.', '_')}`)
+      .select('circle')
+      .classed('shadow', true);
+  }
 
   private find(d, name) {
     if (d.data.person.accountName === name) {
@@ -174,14 +184,36 @@ export class OrgChartComponent implements OnChanges {
     // Enter any new modes at the parent's previous position.
     const nodeEnter = node.enter().append('g')
         .attr('class', 'node')
+        .attr('id', (d) => d.data.person.accountName.replace('.', '_'))
         .attr('transform', (d) => 'translate(' + source.y0 + ',' + source.x0 + ')')
         .on('click', click);
+
+    nodeEnter.append('clipPath')
+      .attr('id', 'circle-mask')
+        .append('circle')
+          .attr('cx', 0)
+          .attr('cy', 0)
+          .attr('r', 10)
+          .attr('fill', 'red');
 
     // Add Circle for the nodes
     nodeEnter.append('circle')
         .attr('class', 'node')
         .attr('r', 1e-6)
         .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
+
+    nodeEnter.append('circle')
+        .attr('class', 'node')
+        .attr('r', 10 + 1.5)
+        .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
+
+    nodeEnter.append('image')
+      .attr('x', -10)
+      .attr('y', -10)
+      .attr('xlink:href', (n) => 'https://nam.delve.office.com/mt/v3/people/profileimage?userId=' + n.data.person.accountName + '%40dynatrace.com')
+      .attr('height', 10 * 2)
+      .attr('widht', 10 * 2)
+      .attr('clip-path', 'url(#circle-mask)');
 
     // Add labels for the nodes
     nodeEnter.append('text')
