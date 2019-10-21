@@ -7,7 +7,7 @@ const FORCES = {
   LINKS: 1/2,
   COLLISION: 1,
   CHARGE: -50,
-  DISTANCE: 20,
+  DISTANCE: 15,
 };
 
 export class ForceGraph {
@@ -71,28 +71,46 @@ export class ForceGraph {
       this.simulation = d3.forceSimulation()
         .force('charge',
           d3.forceManyBody()
-            .strength(FORCES.CHARGE)
+            .strength(-100)
         )
         .force('collide',
           d3.forceCollide()
             .strength(FORCES.COLLISION)
             .radius(d => d['r'] + FORCES.DISTANCE)
-        );
+        )
+        .force('centers', d3.forceCenter(options.width / 2, options.height / 2))
+        .force('y', d3.forceY());
 
       // Connecting the d3 ticker to an angular event emitter
       const that = this;
       this.simulation.on('tick', function() {
         ticker.emit(this);
+
+        const k = 6 * that.simulation.alpha();
+
+        for (const link of that.links) {
+          link.source.y -= k;
+          link.target.y += k;
+        }
+
+        for (const node of that.nodes) {
+          if (node.supervisor) {
+            node.y = that.nodes[that.getNodeIndex(node.supervisor, that.nodes)].y + 90;
+          } else {
+            node.y = 50;
+          }
+        }
       });
 
       this.initNodes();
       this.initLinks();
     }
 
-    /** Updating the central force of the simulation */
-    this.simulation.force('centers', d3.forceCenter(options.width / 2, options.height / 2));
-
     /** Restarting the simulation internal timer */
     this.simulation.restart();
+  }
+
+  getNodeIndex(id, nodes: any[]) {
+    return nodes.findIndex(node => node.id === id);
   }
 }

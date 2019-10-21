@@ -1,0 +1,14 @@
+::ng-deep .node circle {
+    stroke: steelblue;
+    stroke-width: 3px;
+  }
+  
+  ::ng-deep .node text {
+    font: 12px sans-serif;
+  }
+  
+  ::ng-deep .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+  }
