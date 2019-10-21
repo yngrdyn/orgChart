@@ -1,0 +1,81 @@
+
+	{
+		"person": {
+			"fullName": "John Van Siclen",
+			"accountName": "john.van.siclen",
+			"title": "Chief Executive Officer"
+		},
+		"children": [
+			{
+				"person": {
+					"fullName": "Bernd Greifeneder",
+					"accountName": "bernd.greifeneder",
+					"title": "SVP, Chief Technology Officer"
+				},
+				"children": [
+					{
+						"person": {
+							"fullName": "Alexander Scheran",
+							"accountName": "alexander.scheran",
+							"title": "VP Development"
+						},
+						"children": [
+							{
+								"person": {
+									"fullName": "Peter Kunszt",
+									"accountName": "peter.kunszt",
+									"title": "Dev Lab Lead Barcelona"
+								},
+								"children": [
+									{
+										"person": {
+											"fullName": "Yngrid Coello",
+											"accountName": "yngrid.coello",
+											"title": "Software Engineer"
+										},
+										"children": []
+									}
+								]
+							},
+							{
+								"person": {
+									"fullName": "Stefan Frandl",
+									"accountName": "stefan.frandl",
+									"title": "Development Lead"
+								},
+								"children": []
+							}
+						]
+					},
+					{
+						"person": {
+							"fullName": "Florian Ortner",
+							"accountName": "florian.ortner",
+							"title": "Chief Product Officer"
+						},
+						"children": [
+							{
+								"person": {
+									"fullName": "Simon Scheurer",
+									"accountName": "simon.scheurer",
+									"title": "Sr Director Product Management"
+								},
+								"children": []
+							},
+							{
+								"person": {
+									"fullName": "Bartosz Gatz",
+									"accountName": "bartosz.gatz",
+									"title": "Director, Product Management"
+								},
+								"children": []
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+
+    
+        
