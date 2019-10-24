@@ -204,12 +204,12 @@ export class OrgChartComponent implements OnChanges {
     nodeEnter.append('circle')
         .attr('class', 'node')
         .attr('r', 20)
-        .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
+        .style('fill', (d) => this.getNodeColor(d));
 
     nodeEnter.append('circle')
         .attr('class', 'node')
-        .attr('r', 20 + 1.5)
-        .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
+        .attr('r', 20 + 4)
+        .style('fill', (d) => this.getNodeColor(d));
 
     nodeEnter.append('image')
       .attr('x', -20)
@@ -237,7 +237,7 @@ export class OrgChartComponent implements OnChanges {
     // Update the node attributes and style
     nodeUpdate.select('circle.node')
       .attr('r', 10)
-      .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff')
+      .style('fill', (d) => this.getNodeColor(d))
       .attr('cursor', 'pointer');
 
 
@@ -295,6 +295,30 @@ export class OrgChartComponent implements OnChanges {
       n.y0 = n.y;
     });
 
+  }
+
+  private getNodeColor(node) {
+    console.log(node.data.person.location);
+    switch (node.data.person.location) {
+      case 'Waltham': {
+         return '#3f962a';
+      }
+      case 'Linz' : {
+        return '#00848e';
+      }
+      case 'Zurich' : {
+        return '#ef651f';
+      }
+      case 'Gdansk' : {
+        return '#31339c';
+      }
+      case 'Barcelona' : {
+        return '#7c38a1';
+      }
+      default: {
+         return 'lightsteelblue';
+      }
+   }
   }
 
   private visit(parent, visitFn, childrenFn) {
