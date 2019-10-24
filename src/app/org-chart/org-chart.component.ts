@@ -23,6 +23,7 @@ export class OrgChartComponent implements OnChanges {
   root: any;
 
   svg: any;
+  svgGroup: any;
 
   viewerWidth: number;
   viewerHeight: number;
@@ -45,24 +46,26 @@ export class OrgChartComponent implements OnChanges {
           const width = window.innerWidth,
                 height = window.innerHeight;
 
+      const zoom = d3.zoom();
+      const initial_transform = d3.zoomIdentity.translate(width/3, height/2);
+
       // append the svg object to the body of the page
       // appends a 'group' element to 'svg'
       // moves the 'group' element to the top left margin
       this.svg = d3.select('body').append('svg')
           .attr('width', width)
           .attr('height', height)
-          .call(d3.zoom().on('zoom', () => {
-            this.svg.attr('transform', d3.event.transform);
-          }))
-        .append('g')
-          .attr('transform', 'translate('
-                + 50 + ')');
+          .attr('id', 'testing')
+          .call(zoom.transform, initial_transform);
+
+      this.svgGroup = this.svg.append('g')
+          .attr("transform", initial_transform.toString());
 
       // declares a tree layout and assigns the size
       this.treemap = d3.tree().nodeSize([30, 30])
-      .separation(function(a, b) {
-        return a.parent === b.parent ? 1 : 1.25;
-    });
+        .separation(function(a, b) {
+          return a.parent === b.parent ? 1 : 1.25;
+      });
 
       // Assigns parent, children, height, depth
       this.root = d3.hierarchy(this.data, function(d) { return d.children; });
@@ -72,9 +75,11 @@ export class OrgChartComponent implements OnChanges {
       this.collapse(this.root);
       this.find (this.root, 'yngrid.coello');
       this.update(this.root);
-      this.centerNode(this.selectedNode);
+      // this.centerNode(this.selectedNode);
       this.click(this.selectedNode);
       this.updateNode(this.selectedNode);
+
+     this.svg.call(zoom.on("zoom", () => {this.svgGroup.attr("transform", d3.event.transform)}));
 
     }
   }
@@ -164,7 +169,7 @@ export class OrgChartComponent implements OnChanges {
     // ****************** Nodes section ***************************
 
     // Update the nodes...
-    const node = this.svg.selectAll('g.node')
+    const node = this.svgGroup.selectAll('g.node')
         .data(nodes, function(n) {return n.id || (n.id = ++this.i); });
 
     const click = (d) => {
@@ -172,12 +177,12 @@ export class OrgChartComponent implements OnChanges {
         d._children = d.children;
         d.children = null;
         this.update(d);
-        this.centerNode(d);
+        // this.centerNode(d);
       } else if (d._children) {
         d.children = d._children;
         d._children = null;
         this.update(d);
-        this.centerNode(d);
+        // this.centerNode(d);
       }
     };
 
@@ -256,7 +261,7 @@ export class OrgChartComponent implements OnChanges {
     // ****************** links section ***************************
 
     // Update the links...
-    const link = this.svg.selectAll('path.link')
+    const link = this.svgGroup.selectAll('path.link')
         .data(links, (d) => d.id);
 
 
@@ -316,7 +321,7 @@ export class OrgChartComponent implements OnChanges {
     x = x /* * scale */ + window.innerWidth / 2;
     y = y /* * scale */ + window.innerHeight / 2;
     if ( x !== undefined && y !== undefined) {
-      this.svg.transition()
+      this.svgGroup.transition()
         .duration(this.duration)
         .attr('transform', 'translate(' + x + ',' + y + ')');
     }
