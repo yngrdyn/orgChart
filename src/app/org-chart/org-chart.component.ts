@@ -62,9 +62,9 @@ export class OrgChartComponent implements OnChanges {
           .attr("transform", initial_transform.toString());
 
       // declares a tree layout and assigns the size
-      this.treemap = d3.tree().nodeSize([30, 30])
+      this.treemap = d3.tree().nodeSize([40, 40])
         .separation(function(a, b) {
-          return a.parent === b.parent ? 1 : 1.25;
+          return a.parent === b.parent ? 1.5 : 1.75;
       });
 
       // Assigns parent, children, height, depth
@@ -198,32 +198,31 @@ export class OrgChartComponent implements OnChanges {
         .append('circle')
           .attr('cx', 0)
           .attr('cy', 0)
-          .attr('r', 10)
-          .attr('fill', 'red');
+          .attr('r', 20);
 
     // Add Circle for the nodes
     nodeEnter.append('circle')
         .attr('class', 'node')
-        .attr('r', 1e-6)
+        .attr('r', 20)
         .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
 
     nodeEnter.append('circle')
         .attr('class', 'node')
-        .attr('r', 10 + 1.5)
+        .attr('r', 20 + 1.5)
         .style('fill', (d) => d._children ? 'lightsteelblue' : '#fff');
 
     nodeEnter.append('image')
-      .attr('x', -10)
-      .attr('y', -10)
+      .attr('x', -20)
+      .attr('y', -20)
       .attr('xlink:href', (n) => 'https://nam.delve.office.com/mt/v3/people/profileimage?userId=' + n.data.person.accountName + '%40dynatrace.com')
-      .attr('height', 10 * 2)
-      .attr('widht', 10 * 2)
+      .attr('height', 20 * 2)
+      .attr('widht', 20 * 2)
       .attr('clip-path', 'url(#circle-mask)');
 
     // Add labels for the nodes
     nodeEnter.append('text')
         .attr('dy', '.35em')
-        .attr('x', (d) => d.children || d._children ? -13 : 13)
+        .attr('x', (d) => d.children || d._children ? -30 : 30)
         .attr('text-anchor', (d) => d.children || d._children ? 'end' : 'start')
         .text((d) => d.data.person.fullName);
 
