@@ -72,16 +72,26 @@ export class OrgChartComponent implements OnChanges {
       this.root.x0 = height / 2;
       this.root.y0 = 0;
 
-      this.collapse(this.root);
-      this.find (this.root, 'yngrid.coello');
+      // this.collapse(this.root);
       this.update(this.root);
-      // this.centerNode(this.selectedNode);
-      this.click(this.selectedNode);
-      this.updateNode(this.selectedNode);
+      this.onClick('Yngrid Coello');
 
      this.svg.call(zoom.on("zoom", () => {this.svgGroup.attr("transform", d3.event.transform)}));
 
     }
+  }
+
+  onClick(fullName) {
+
+    console.log(fullName);
+    this.collapse(this.root);
+    // this.selectedNode = this.fnf(fullName);
+
+    this.find (this.root, fullName);
+    this.click(this.selectedNode);
+
+    this.centerNode(this.selectedNode);
+
   }
 
   private collapse(d) {
@@ -102,8 +112,15 @@ export class OrgChartComponent implements OnChanges {
       .classed('shadow', true);
   }
 
+  private fnf(fullName) {
+    const treeData = this.treemap(this.root);
+    const nodes = treeData.descendants();
+    const a = nodes.filter((node) => node.data.person.fullName === fullName);
+    return a[0];
+  }
+
   private find(d, name) {
-    if (d.data.person.accountName === name) {
+    if (d.data.person.fullName === name) {
       this.selectedNode = d;
       while (d.parent) {
           d = d.parent;
@@ -298,7 +315,6 @@ export class OrgChartComponent implements OnChanges {
   }
 
   private getNodeColor(node) {
-    console.log(node.data.person.location);
     switch (node.data.person.location) {
       case 'Waltham': {
          return '#3f962a';
@@ -344,9 +360,12 @@ export class OrgChartComponent implements OnChanges {
     x = x /* * scale */ + window.innerWidth / 2;
     y = y /* * scale */ + window.innerHeight / 2;
     if ( x !== undefined && y !== undefined) {
+      const initial_transform = d3.zoomIdentity.translate(x, y);
+      this.svg
+          .call(d3.zoom().transform, initial_transform);
       this.svgGroup.transition()
         .duration(this.duration)
-        .attr('transform', 'translate(' + x + ',' + y + ')');
+        .attr('transform', initial_transform.toString());
     }
     /* this.svg.transition()
         .duration(this.duration)
