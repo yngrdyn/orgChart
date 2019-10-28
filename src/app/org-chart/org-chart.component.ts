@@ -24,6 +24,7 @@ export class OrgChartComponent implements OnChanges {
 
   svg: any;
   svgGroup: any;
+  shadow: any;
 
   viewerWidth: number;
   viewerHeight: number;
@@ -61,6 +62,65 @@ export class OrgChartComponent implements OnChanges {
       this.svgGroup = this.svg.append('g')
           .attr("transform", initial_transform.toString());
 
+      this.shadow = this.svgGroup
+          .append('defs')
+          .append('filter')
+            .attr("id", "dropshadow");
+      this.shadow
+          .append('feGaussianBlur')
+            .attr('in', 'SourceAlpha')
+            .attr('stdDeviation', '3')
+            .attr('result', 'DROP');
+      this.shadow
+          .append('feFlood')
+            .attr('id', 'shadow-color')
+            .attr('flood-color', '#bbb')
+            .attr('result', 'COLOR');
+      this.shadow
+          .append('feComposite')
+            .attr('in', 'COLOR')
+            .attr('in2', 'DROP')
+            .attr('operator', 'in')
+            .attr('result', 'SHADOW');
+
+      /* this.shadow = this.svgGroup
+        .append('defs')
+        .append('filter')
+          .attr("id", "dropshadow")
+          .attr("x", "-40%")
+          .attr("y", "-40%")
+          .attr("width", "180%")
+          .attr("height", "180%")
+          .attr("filterUnits", "userSpaceOnUse");
+
+      const a = this.shadow
+          .append('feGaussianBlur')
+            .attr("in", "SourceAlpha")
+            .attr("stdDeviation", "3");
+
+      a.append("feOffset")
+            .attr("dx","5")
+            .attr("dy","5")
+            .attr("result", "offsetblur");
+      a.append("feOffset")
+        .attr("dx","-5")
+        .attr("dy","-5")
+        .attr("result", "offsetblur");
+      this.shadow.append("feColorMatrix")
+        .attr("id", "shadow-color")
+        .attr("result", "matrixOut")
+        .attr("in", "offOut")
+        .attr("type", "matrix")
+        .attr("values", "0.2 0 0 0 0 0 0.2 0 0 1 0 0 0.2 0 0 0 0 0 1 0");
+
+      const b = a.append("feMerge");
+      b.append('feMergeNode');
+      b.append('feMergeNode')
+        .attr("in", "SourceGraphic");
+      b.append('feMergeNode')
+        .attr("in", "SourceGraphic"); */
+
+
       // declares a tree layout and assigns the size
       this.treemap = d3.tree().nodeSize([40, 40])
         .separation(function(a, b) {
@@ -91,7 +151,7 @@ export class OrgChartComponent implements OnChanges {
     this.click(this.selectedNode);
 
     this.centerNode(this.selectedNode);
-
+    this.updateNode(this.selectedNode);
   }
 
   private collapse(d) {
@@ -104,12 +164,17 @@ export class OrgChartComponent implements OnChanges {
   }}
 
   private updateNode(node) {
+    console.log(node);
     const t = d3.select(`#${node.data.person.accountName.replace('.', '_')}`)
       .select('text')
       .style('font-weight', 'bold');
     d3.select(`#${node.data.person.accountName.replace('.', '_')}`)
-      .select('circle')
-      .classed('shadow', true);
+      .select('#test')
+      .attr('r', 20 + 5)
+      .style("filter", "url(#dropshadow)");
+
+    d3.select('#shadow-color')
+      .attr('flood-color', this.getNodeColor(node));
   }
 
   private fnf(fullName) {
@@ -225,6 +290,12 @@ export class OrgChartComponent implements OnChanges {
 
     nodeEnter.append('circle')
         .attr('class', 'node')
+        .attr('r', 20 + 4)
+        .style('fill', (d) => this.getNodeColor(d));
+
+    nodeEnter.append('circle')
+        .attr('class', 'node')
+        .attr('id', 'test')
         .attr('r', 20 + 4)
         .style('fill', (d) => this.getNodeColor(d));
 
