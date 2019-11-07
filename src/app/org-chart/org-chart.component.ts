@@ -141,9 +141,11 @@ export class OrgChartComponent implements OnChanges {
     }
   }
 
-  onClick(fullName) {
+  onKeyUp(event) {
+    console.log(event);
+  }
 
-    console.log(fullName);
+  onClick(fullName) {
     this.collapse(this.root);
     // this.selectedNode = this.fnf(fullName);
 
@@ -185,7 +187,7 @@ export class OrgChartComponent implements OnChanges {
   }
 
   private find(d, name) {
-    if (d.data.person.fullName === name) {
+    if (d.data.person.fullName.toLowerCase() === name.toLowerCase() || d.data.person.accountName.toLowerCase() === name.toLowerCase()) {
       this.selectedNode = d;
       while (d.parent) {
           d = d.parent;

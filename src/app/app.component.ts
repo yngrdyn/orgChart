@@ -11,7 +11,8 @@ import { filter, tap, map } from 'rxjs/operators';
 
 export class AppComponent implements OnInit {
 
-  data$ = this.http.get<any>('./assets/data/data.json');
+  // data$ = this.http.get<any>('./assets/data/data.json');
+  data$ = this.http.get<any>('./assets/data/dataFull.json');
 
   constructor(
     private http: HttpClient

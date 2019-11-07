@@ -1,4 +1,4 @@
-<input #input placeholder="search by full name"/>
+<input #input placeholder="search by full name" (keyup.enter)="onClick(input.value)"/>
 <button (click)="onClick(input.value)">
     Find
 </button>
